@@ -24,7 +24,7 @@ public class Main {
              request = reader.readLine();
              if (request.contains("GET")) {
                  if (request.contains("/ "))
-                     response = "HTTP/1.1 200 OK";
+                     response = "HTTP/1.1 200 OK\r\n\r\n";
              }
          }
          writer.write(response);
