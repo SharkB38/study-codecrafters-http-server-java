@@ -16,7 +16,6 @@ public class Main {
        serverSocket = new ServerSocket(4221);
        serverSocket.setReuseAddress(true);
        while (true) {
-           System.out.println(Thread.activeCount());
            clientSocket = serverSocket.accept(); // Wait for connection from client.
            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
