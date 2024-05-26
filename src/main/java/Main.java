@@ -27,6 +27,7 @@ public class Main {
                    boolean agentFlag = false;
                    while (reader.ready()) {
                        request = reader.readLine();
+                       System.out.println(request + "//");
                        if (request.contains("GET")) {
                            if (request.contains("/ "))
                                response = "HTTP/1.1 200 OK\r\n\r\n";
