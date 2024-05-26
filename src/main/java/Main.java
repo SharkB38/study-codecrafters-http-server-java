@@ -15,38 +15,52 @@ public class Main {
      try {
        serverSocket = new ServerSocket(4221);
        serverSocket.setReuseAddress(true);
-       clientSocket = serverSocket.accept(); // Wait for connection from client.
-         String response = "HTTP/1.1 404 Not Found\r\n\r\n";
-         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-         BufferedReader reader  =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-         String request;
-         boolean agentFlag = false;
-         while (reader.ready()) {
-             request = reader.readLine();
-             if (request.contains("GET")) {
-                 if (request.contains("/ "))
-                     response = "HTTP/1.1 200 OK\r\n\r\n";
-                 if (request.contains("/echo/")) {
-                     int start = request.indexOf("/echo/") + "/echo/".length();
-                     int end = request.indexOf(" HTTP");
-                     String echo = request.substring(start, end);
-                     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
-                             + echo.length() + "\r\n\r\n" + echo;
-                 } else if (request.contains("/user-agent")) {
-                     agentFlag = true;
-                 }
-             }
-             if (request.contains("User-Agent")) {
-                 int start = request.indexOf(" ") + 1;
-                 int end = request.length();
-                 String agent = request.substring(start, end);
-                 response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
-                         + agent.length() + "\r\n\r\n" + agent;
-             }
-         }
-         writer.write(response);
-         writer.flush();
-       System.out.println("accepted new connection");
+       while (true) {
+           System.out.println(Thread.activeCount());
+           clientSocket = serverSocket.accept(); // Wait for connection from client.
+           BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+           BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+           Thread socketThread = new Thread(() -> {
+               try {
+                   String response = "HTTP/1.1 404 Not Found\r\n\r\n";
+
+                   String request;
+                   boolean agentFlag = false;
+                   while (reader.ready()) {
+                       request = reader.readLine();
+                       if (request.contains("GET")) {
+                           if (request.contains("/ "))
+                               response = "HTTP/1.1 200 OK\r\n\r\n";
+                           if (request.contains("/echo/")) {
+                               int start = request.indexOf("/echo/") + "/echo/".length();
+                               int end = request.indexOf(" HTTP");
+                               String echo = request.substring(start, end);
+                               response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
+                                       + echo.length() + "\r\n\r\n" + echo;
+                           } else if (request.contains("/user-agent")) {
+                               agentFlag = true;
+                           }
+                       }
+                       if (request.contains("User-Agent") && agentFlag) {
+                           int start = request.indexOf(" ") + 1;
+                           int end = request.length();
+                           String agent = request.substring(start, end);
+                           response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
+                                   + agent.length() + "\r\n\r\n" + agent;
+                       }
+                   }
+                   writer.write(response);
+                   writer.flush();
+
+                   reader.close();
+                   writer.close();
+                   System.out.println("accepted new connection");
+               } catch (IOException e) {
+                   System.out.println("IOException: " + e.getMessage());
+               }
+           });
+           socketThread.start();
+       }
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
      }
