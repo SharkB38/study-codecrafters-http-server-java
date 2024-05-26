@@ -1,6 +1,4 @@
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -18,8 +16,17 @@ public class Main {
        serverSocket = new ServerSocket(4221);
        serverSocket.setReuseAddress(true);
        clientSocket = serverSocket.accept(); // Wait for connection from client.
-         String response = "HTTP/1.1 200 OK\r\n\r\n";
+         String response = "HTTP/1.1 404 Not found\r\n\r\n";
          BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+         BufferedReader reader  =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+         String request;
+         while (reader.ready()) {
+             request = reader.readLine();
+             if (request.contains("GET")) {
+                 if (request.contains("/ "))
+                     response = "HTTP/1.1 200 OK";
+             }
+         }
          writer.write(response);
          writer.flush();
        System.out.println("accepted new connection");
