@@ -9,18 +9,18 @@ public class Main {
 
     // Uncomment this block to pass the first stage
     //
-     ServerSocket serverSocket = null;
-     Socket clientSocket = null;
+     //ServerSocket serverSocket = null;
+     //Socket clientSocket = null;
     //
      try {
-       serverSocket = new ServerSocket(4221);
+         ServerSocket serverSocket = new ServerSocket(4221);
        serverSocket.setReuseAddress(true);
        while (true) {
-           clientSocket = serverSocket.accept(); // Wait for connection from client.
-           BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-           BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
            Thread socketThread = new Thread(() -> {
                try {
+                   Socket clientSocket = serverSocket.accept(); // Wait for connection from client.
+                   BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+                   BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                    String response = "HTTP/1.1 404 Not Found\r\n\r\n";
 
                    String request;
