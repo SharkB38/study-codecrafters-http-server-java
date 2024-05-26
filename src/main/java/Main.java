@@ -25,6 +25,13 @@ public class Main {
              if (request.contains("GET")) {
                  if (request.contains("/ "))
                      response = "HTTP/1.1 200 OK\r\n\r\n";
+                 if (request.contains("/echo/")) {
+                     int start = request.indexOf("/echo/") + "/echo/".length();
+                     int end = request.indexOf(" HTTP");
+                     String echo = request.substring(start, end);
+                     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
+                             + echo.length() + "\r\n\r\n" + echo;
+                 }
              }
          }
          writer.write(response);
