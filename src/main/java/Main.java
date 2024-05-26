@@ -20,6 +20,7 @@ public class Main {
          BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
          BufferedReader reader  =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
          String request;
+         boolean agentFlag = false;
          while (reader.ready()) {
              request = reader.readLine();
              if (request.contains("GET")) {
@@ -31,7 +32,16 @@ public class Main {
                      String echo = request.substring(start, end);
                      response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
                              + echo.length() + "\r\n\r\n" + echo;
+                 } else if (request.contains("/user-agent")) {
+                     agentFlag = true;
                  }
+             }
+             if (request.contains("User-Agent")) {
+                 int start = request.indexOf(" ") + 1;
+                 int end = request.length();
+                 String agent = request.substring(start, end);
+                 response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
+                         + agent.length() + "\r\n\r\n" + agent;
              }
          }
          writer.write(response);
