@@ -60,6 +60,33 @@ public class ResponseHandler extends Thread {
                         }
                     }
                 }
+            } else if (request.contains("POST")) {
+                if (argv[0].equals("--directory")) {
+                    System.out.println(request);
+                    int start = request.indexOf("/files/") + "/files/".length();
+                    int end = request.indexOf(" HTTP");
+                    String filename = request.substring(start, end);
+                    StringBuilder requestText = new StringBuilder();
+                    String line;
+                    while (!(line = reader.readLine()).isEmpty()) {
+                        requestText.append(line).append("\n");
+                    }
+                    String path;
+
+                    path = argv[1];
+                    path += filename;
+                    StringBuilder content = new StringBuilder();
+                    while (reader.ready()) {
+                        content.append((char) reader.read());
+                    }
+                    File file = new File(path);
+                    file.createNewFile();
+                    FileOutputStream fos = new FileOutputStream(file);
+                    fos.write(content.toString().getBytes());
+                    response = "HTTP/1.1 201 OK\r\n\r\n";
+
+                    System.out.println(requestText);
+                }
             }
             System.out.println(response);
             writer.write(response);
