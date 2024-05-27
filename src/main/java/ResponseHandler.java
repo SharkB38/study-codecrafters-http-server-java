@@ -44,7 +44,10 @@ public class ResponseHandler extends Thread {
                         int start = request.indexOf("/files/") + "files/".length();
                         int end = request.indexOf("HTTP");
                         path += request.substring(start, end);
+                        System.out.println(path);
                         File file = new File(path);
+                        if (file.exists())
+                            System.out.println("file exists");
                         try (FileReader fr = new FileReader(file)) {
                             BufferedReader fileReader = new BufferedReader(fr);
                             StringBuilder content = new StringBuilder();
