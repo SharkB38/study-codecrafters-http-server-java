@@ -49,7 +49,7 @@ public class ResponseHandler extends Thread {
                                 gzip.write(echo.getBytes(StandardCharsets.UTF_8));
                                 gzip.close();
                                 echo = HexFormat.of().formatHex(obj.toByteArray());
-                                echoLength = obj.toByteArray().length / 2;
+                                echoLength = obj.toByteArray().length;
                                 obj.close();
                                 break;
                             }
