@@ -29,10 +29,12 @@ public class ResponseHandler extends Thread {
                     int start = request.indexOf("/echo/") + "/echo/".length();
                     int end = request.indexOf(" HTTP");
                     String echo = request.substring(start, end);
-                    while (!request.toLowerCase().contains("accept-encoding:")) {
+                    while (!request.toLowerCase().contains("accept-encoding:") && !request.isEmpty()) {
                         request = reader.readLine();
                     }
-                    String encoding = request.substring("accept-encoding: ".length());
+                    String encoding = "";
+                    if (request.toLowerCase().contains("accept-encoding:"))
+                        encoding = request.substring("accept-encoding: ".length());
                     System.out.println(encoding);
                     response = "HTTP/1.1 200 OK\r\n";
                     if (encoding.equals("gzip"))
