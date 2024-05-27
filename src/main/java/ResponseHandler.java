@@ -83,7 +83,7 @@ public class ResponseHandler extends Thread {
                     file.createNewFile();
                     FileOutputStream fos = new FileOutputStream(file);
                     fos.write(content.toString().getBytes());
-                    response = "HTTP/1.1 201 OK\r\n\r\n";
+                    response = "HTTP/1.1 201 Created\r\n\r\n";
 
                     System.out.println(requestText);
                 }
