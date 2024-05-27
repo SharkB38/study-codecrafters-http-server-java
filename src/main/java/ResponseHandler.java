@@ -33,6 +33,7 @@ public class ResponseHandler extends Thread {
                     int start = request.indexOf("/echo/") + "/echo/".length();
                     int end = request.indexOf(" HTTP");
                     String echo = request.substring(start, end);
+                    int echoLength = echo.length();
                     while (!request.toLowerCase().contains("accept-encoding:") && !request.isEmpty()) {
                         request = reader.readLine();
                     }
@@ -48,12 +49,14 @@ public class ResponseHandler extends Thread {
                                 gzip.write(echo.getBytes(StandardCharsets.UTF_8));
                                 gzip.close();
                                 echo = HexFormat.of().formatHex(obj.toByteArray());
+                                echoLength = obj.size();
+                                obj.close();
                                 break;
                             }
                         }
                     }
                     response += "Content-Type: text/plain\r\nContent-length: "
-                            + echo.length() + "\r\n\r\n" + echo;
+                            + echoLength + "\r\n\r\n" + echo;
 
                 } else if (request.contains("/user-agent")) {
                     while (!request.contains("User-Agent"))
