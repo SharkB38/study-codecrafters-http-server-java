@@ -22,6 +22,7 @@ public class ResponseHandler extends Thread {
                 request = reader.readLine();
                 //System.out.println(request + "//");
                 if (request.contains("GET")) {
+                    System.out.println(request);
                     if (request.contains("/ "))
                         response = "HTTP/1.1 200 OK\r\n\r\n";
                     if (request.contains("/echo/")) {
