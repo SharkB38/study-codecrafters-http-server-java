@@ -32,13 +32,17 @@ public class ResponseHandler extends Thread {
                     while (!request.toLowerCase().contains("accept-encoding:") && !request.isEmpty()) {
                         request = reader.readLine();
                     }
-                    String encoding = "";
-                    if (request.toLowerCase().contains("accept-encoding:"))
-                        encoding = request.substring("accept-encoding: ".length());
-                    System.out.println(encoding);
+                    String[] encoding = {};
+                    if (request.toLowerCase().contains("accept-encoding:")) {
+                        encoding = request.substring("accept-encoding: ".length()).split(", ");
+                    }
                     response = "HTTP/1.1 200 OK\r\n";
-                    if (encoding.equals("gzip"))
-                        response += "Content-Encoding: " + encoding + "\r\n";
+                    for (String encode : encoding) {
+                        if (encode.equals("gzip")) {
+                            response += "Content-Encoding: " + encode + "\r\n";
+                            break;
+                        }
+                    }
                     response += "Content-Type: text/plain\r\nContent-length: "
                             + echo.length() + "\r\n\r\n" + echo;
                 } else if (request.contains("/user-agent")) {
