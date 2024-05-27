@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.stream.Collectors;
 
 public class ResponseHandler extends Thread {
 
@@ -42,7 +43,7 @@ public class ResponseHandler extends Thread {
                     if (argv[0].equals("--directory")) {
                         String path = argv[1];
                         int start = request.indexOf("/files/") + "/files/".length();
-                        int end = request.indexOf("HTTP");
+                        int end = request.indexOf(" HTTP");
                         path += request.substring(start, end);
                         System.out.println(path);
                         File file = new File(path);
@@ -51,11 +52,7 @@ public class ResponseHandler extends Thread {
                         try (FileReader fr = new FileReader(file)) {
                             BufferedReader fileReader = new BufferedReader(fr);
                             StringBuilder content = new StringBuilder();
-                            String line;
-                            while (fileReader.ready()) {
-                                line = fileReader.readLine();
-                                content.append(line);
-                            }
+                            content.append(fileReader.lines().collect(Collectors.joining("\n")));
                             response = "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-length: "
                                     + content.toString().length() + "\r\n\r\n" + content;
                         } catch (IOException e) {
