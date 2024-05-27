@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HexFormat;
 import java.util.stream.Collectors;
@@ -48,8 +49,8 @@ public class ResponseHandler extends Thread {
                                 GZIPOutputStream gzip = new GZIPOutputStream(obj);
                                 gzip.write(echo.getBytes(StandardCharsets.UTF_8));
                                 gzip.close();
-                                echo = Base64.getEncoder().encodeToString(obj.toByteArray());
-                                echoLength = echo.length();
+                                echo = new String(obj.toByteArray());
+                                echoLength = obj.toByteArray().length;
                                 obj.close();
                                 break;
                             }
