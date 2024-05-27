@@ -20,7 +20,7 @@ public class ResponseHandler extends Thread {
             boolean agentFlag = false;
             while (reader.ready()) {
                 request = reader.readLine();
-                System.out.println(request + "//");
+                //System.out.println(request + "//");
                 if (request.contains("GET")) {
                     if (request.contains("/ "))
                         response = "HTTP/1.1 200 OK\r\n\r\n";
@@ -42,6 +42,7 @@ public class ResponseHandler extends Thread {
                             + agent.length() + "\r\n\r\n" + agent;
                 }
             }
+            System.out.println(response);
             writer.write(response);
             writer.flush();
 

@@ -13,7 +13,7 @@ public class Main {
     // Uncomment this block to pass the first stage
     //
     //
-     try (final ExecutorService executorService = Executors.newFixedThreadPool(10)) {
+     try (final ExecutorService executorService = Executors.newCachedThreadPool()) {
          ServerSocket serverSocket = new ServerSocket(4221);
          serverSocket.setReuseAddress(true);
        while (true) {
