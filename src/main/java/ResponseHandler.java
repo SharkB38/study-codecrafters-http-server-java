@@ -92,17 +92,24 @@ public class ResponseHandler extends Thread {
                         path += request.substring(start, end);
                         System.out.println(path);
                         File file = new File(path);
-                        if (file.exists())
+                        if (file.exists()) {
                             System.out.println("file exists");
-                        try (FileReader fr = new FileReader(file)) {
-                            BufferedReader fileReader = new BufferedReader(fr);
-                            StringBuilder content = new StringBuilder();
-                            content.append(fileReader.lines().collect(Collectors.joining("\n")));
-                            response = "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-length: "
-                                    + content.toString().length() + "\r\n\r\n" + content;
-                            writer.write(response.getBytes());
-                        } catch (IOException e) {
+                            try (FileReader fr = new FileReader(file)) {
+                                BufferedReader fileReader = new BufferedReader(fr);
+                                StringBuilder content = new StringBuilder();
+                                content.append(fileReader.lines().collect(Collectors.joining("\n")));
+                                response = "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-length: "
+                                        + content.toString().length() + "\r\n\r\n" + content;
+                                writer.write(response.getBytes());
+                            } catch (IOException e) {
 
+                            }
+                        } else {
+                            System.out.println(response);
+                            writer.write(response.getBytes());
+
+                            reader.close();
+                            writer.close();
                         }
                     }
                 } else {
