@@ -41,7 +41,7 @@ public class ResponseHandler extends Thread {
                 } else if (request.contains("/files/")) {
                     if (argv[0].equals("--directory")) {
                         String path = argv[1];
-                        int start = request.indexOf("/files/") + "files/".length();
+                        int start = request.indexOf("/files/") + "/files/".length();
                         int end = request.indexOf("HTTP");
                         path += request.substring(start, end);
                         System.out.println(path);
