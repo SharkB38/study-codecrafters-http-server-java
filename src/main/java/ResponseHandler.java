@@ -29,7 +29,15 @@ public class ResponseHandler extends Thread {
                     int start = request.indexOf("/echo/") + "/echo/".length();
                     int end = request.indexOf(" HTTP");
                     String echo = request.substring(start, end);
-                    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
+                    while (!request.toLowerCase().contains("accept-encoding:")) {
+                        request = reader.readLine();
+                    }
+                    String encoding = request.substring("accept-encoding: ".length());
+                    System.out.println(encoding);
+                    response = "HTTP/1.1 200 OK\r\n";
+                    if (encoding.equals("gzip"))
+                        response += "Content-Encoding: " + encoding + "\r\n";
+                    response += "Content-Type: text/plain\r\nContent-length: "
                             + echo.length() + "\r\n\r\n" + echo;
                 } else if (request.contains("/user-agent")) {
                     while (!request.contains("User-Agent"))
