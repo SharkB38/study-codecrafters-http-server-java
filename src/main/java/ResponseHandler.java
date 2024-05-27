@@ -48,7 +48,7 @@ public class ResponseHandler extends Thread {
                                 GZIPOutputStream gzip = new GZIPOutputStream(obj);
                                 gzip.write(echo.getBytes(StandardCharsets.UTF_8));
                                 gzip.close();
-                                echo = HexFormat.of().formatHex(obj.toByteArray());
+                                echo = Base64.getEncoder().encodeToString(obj.toByteArray());
                                 echoLength = obj.toByteArray().length;
                                 obj.close();
                                 break;
