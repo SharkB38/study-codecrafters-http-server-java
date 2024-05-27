@@ -16,26 +16,21 @@ public class ResponseHandler extends Thread {
 
             String response = "HTTP/1.1 404 Not Found\r\n\r\n";
 
-            String request;
-            boolean agentFlag = false;
-            while (reader.ready()) {
-                request = reader.readLine();
+            String request = reader.readLine();
                 //System.out.println(request + "//");
-                if (request.contains("GET")) {
-                    System.out.println(request);
-                    if (request.contains("/ "))
-                        response = "HTTP/1.1 200 OK\r\n\r\n";
-                    if (request.contains("/echo/")) {
-                        int start = request.indexOf("/echo/") + "/echo/".length();
-                        int end = request.indexOf(" HTTP");
-                        String echo = request.substring(start, end);
-                        response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
-                                + echo.length() + "\r\n\r\n" + echo;
-                    } else if (request.contains("/user-agent")) {
-                        agentFlag = true;
-                    }
-                }
-                if (request.contains("User-Agent") && agentFlag) {
+            if (request.contains("GET")) {
+                System.out.println(request);
+                if (request.contains("/ "))
+                    response = "HTTP/1.1 200 OK\r\n\r\n";
+                if (request.contains("/echo/")) {
+                    int start = request.indexOf("/echo/") + "/echo/".length();
+                    int end = request.indexOf(" HTTP");
+                    String echo = request.substring(start, end);
+                    response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
+                            + echo.length() + "\r\n\r\n" + echo;
+                } else if (request.contains("/user-agent")) {
+                    while (!request.contains("User-Agent"))
+                        request = reader.readLine();
                     int start = request.indexOf(" ") + 1;
                     int end = request.length();
                     String agent = request.substring(start, end);
