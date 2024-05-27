@@ -4,9 +4,11 @@ import java.net.Socket;
 public class ResponseHandler extends Thread {
 
     private final Socket clientSocket;
+    private final String[] argv;
 
-    public ResponseHandler(Socket clientSocket) {
+    public ResponseHandler(Socket clientSocket, String[] argv) {
         this.clientSocket = clientSocket;
+        this.argv = argv;
     }
 
     @Override
@@ -20,9 +22,9 @@ public class ResponseHandler extends Thread {
                 //System.out.println(request + "//");
             if (request.contains("GET")) {
                 System.out.println(request);
-                if (request.contains("/ "))
+                if (request.contains("/ ")) {
                     response = "HTTP/1.1 200 OK\r\n\r\n";
-                if (request.contains("/echo/")) {
+                } else if (request.contains("/echo/")) {
                     int start = request.indexOf("/echo/") + "/echo/".length();
                     int end = request.indexOf(" HTTP");
                     String echo = request.substring(start, end);
@@ -36,6 +38,27 @@ public class ResponseHandler extends Thread {
                     String agent = request.substring(start, end);
                     response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-length: "
                             + agent.length() + "\r\n\r\n" + agent;
+                } else if (request.contains("/files/")) {
+                    if (argv[0].equals("--directory")) {
+                        String path = argv[1];
+                        int start = request.indexOf("/files/") + "files/".length();
+                        int end = request.indexOf("HTTP");
+                        path += request.substring(start, end);
+                        File file = new File(path);
+                        try (FileReader fr = new FileReader(file)) {
+                            BufferedReader fileReader = new BufferedReader(fr);
+                            StringBuilder content = new StringBuilder();
+                            String line;
+                            while (fileReader.ready()) {
+                                line = fileReader.readLine();
+                                content.append(line);
+                            }
+                            response = "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-length: "
+                                    + content.toString().length() + "\r\n\r\n" + content;
+                        } catch (IOException e) {
+
+                        }
+                    }
                 }
             }
             System.out.println(response);
