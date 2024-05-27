@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPOutputStream;
 
 public class ResponseHandler extends Thread {
 
@@ -32,19 +34,25 @@ public class ResponseHandler extends Thread {
                     while (!request.toLowerCase().contains("accept-encoding:") && !request.isEmpty()) {
                         request = reader.readLine();
                     }
+                    response = "HTTP/1.1 200 OK\r\n";
                     String[] encoding = {};
                     if (request.toLowerCase().contains("accept-encoding:")) {
                         encoding = request.substring("accept-encoding: ".length()).split(", ");
-                    }
-                    response = "HTTP/1.1 200 OK\r\n";
-                    for (String encode : encoding) {
-                        if (encode.equals("gzip")) {
-                            response += "Content-Encoding: " + encode + "\r\n";
-                            break;
+                        for (String encode : encoding) {
+                            if (encode.equals("gzip")) {
+                                response += "Content-Encoding: " + encode + "\r\n";
+                                ByteArrayOutputStream obj = new ByteArrayOutputStream();
+                                GZIPOutputStream gzip = new GZIPOutputStream(obj);
+                                gzip.write(echo.getBytes(StandardCharsets.UTF_8));
+                                gzip.close();
+                                echo = obj.toString(StandardCharsets.UTF_8);
+                                break;
+                            }
                         }
                     }
                     response += "Content-Type: text/plain\r\nContent-length: "
                             + echo.length() + "\r\n\r\n" + echo;
+
                 } else if (request.contains("/user-agent")) {
                     while (!request.contains("User-Agent"))
                         request = reader.readLine();
