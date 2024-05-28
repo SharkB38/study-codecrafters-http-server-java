@@ -22,10 +22,13 @@ public class ResponseConstructor {
                 break;
             case 201:
                 status += code + " Created";
+                break;
             case 404:
                 status += code + " Not Found";
+                break;
             default:
                 status += "404 Not Found";
+                break;
         }
     }
 
