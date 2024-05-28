@@ -15,10 +15,18 @@ public class ResponseConstructor {
     }
 
     public void setStatus(int code) {
-        if (code != 404)
-            status = "HTTP/1.1 " + code + " OK";
-        else
-            status = "HTTP/1.1 " + code + " Not Found";
+        status = "HTTP/1.1 ";
+        switch (code) {
+            case 200:
+                status += code + " OK";
+                break;
+            case 201:
+                status += code + " Created";
+            case 404:
+                status += code + " Not Found";
+            default:
+                status += "404 Not Found";
+        }
     }
 
     public void addHeaders(String headerName, String[] headerParams) {
