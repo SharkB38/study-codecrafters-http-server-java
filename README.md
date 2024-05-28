@@ -1,4 +1,4 @@
-[![progress-banner](https://backend.codecrafters.io/progress/http-server/3f6deaac-7d2c-443a-9711-11474e4d2c80)
+[progress-banner](https://backend.codecrafters.io/progress/http-server/3f6deaac-7d2c-443a-9711-11474e4d2c80)
 
 This is a starting point for Java solutions to the
 ["Build Your Own HTTP server" Challenge](https://app.codecrafters.io/courses/http-server/overview).
